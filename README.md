@@ -1,5 +1,40 @@
 # Acme Explorer project
 
+# Trabajo Despliegue y Operación de Servicios usando Acme Explorer
+
+## Build image
+
+```
+docker build -t davromorg/do-2122-01 --no-cache .
+```
+
+## Push to DockerHub
+
+```
+docker login
+```
+
+```
+docker push davromorg/do-2122-01
+```
+
+## Create network
+```
+docker network create ass
+```
+
+## Mongo instance
+```
+docker run -p 27017:27017 --network="ass" --name="mongodb" -d mongo
+```
+
+## API instance
+```
+docker run -p 8080:8080 --network="ass" --name="node" -d davromorg/do-2122-01
+```
+
+
+
 # Getting started
 
 ## MIS-GEMAD API in SwaggerHub
