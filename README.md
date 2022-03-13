@@ -33,7 +33,9 @@ docker run -p 27017:27017 --network="ass" --name="mongodb" -d mongo
 docker run -p 8080:8080 --network="ass" --name="node" -d davromorg/do-2122-01
 ```
 
+## Access
 
+You can access to API via http://ec2-52-47-186-87.eu-west-3.compute.amazonaws.com:8080/trips
 
 # Getting started
 
