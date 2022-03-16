@@ -1,30 +1,33 @@
+version: '3'
 services:
 
-  node:
-    container_name: node
+  app:
     build: .
-    depends_on:
-      - mongodb
     ports:
-      - "8080:8080"
+      - "${PORT:-8080}:${PORT:-8080}"
     volumes:
-      - .:/opt/app
-      - /opt/app/node_modules
       - "logsvolume:/usr/src/app/logs"
+    restart: "on-failure"
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DBPORT=${DBPORT}
+      - mongoDBHostname=${mongoDBHostname}
     networks:
       - ass
-  
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: always
+
+  mongo:
+    image: "mongo"
+    command: --port ${DBPORT} --logpath /var/log/mongodb/mongodb.log
     environment:
       MONGO_INITDB_DATABASE: ACME_Explorer
-    ports:
-      - "27017:27017"
     volumes:
       - "logsvolume:/var/log/mongodb"
       - "datavolume:/data/db"
+    expose:
+      - "${DBPORT}"
     networks:
       - ass
 

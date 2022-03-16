@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
 const mongoose = require("mongoose");
+var logger = require('./logger');
 
 // creación de los esquemas en MongoDB
 // nota: aunque no se usen las variables, los "requires" son obligatorios
@@ -46,17 +47,17 @@ routesDashboard(app);
 
 // MongoDB URI building
 const mongoDBHostname = process.env.mongoDBHostname || "mongodb";
-const mongoDBPort = process.env.mongoDBPort || "27017";
+const mongoDBPort = process.env.DBPORT || "27017";
 const mongoDBName = process.env.mongoDBName || "ACME_Explorer";
 const mongoDBURI =
   "mongodb://" + mongoDBHostname + ":" + mongoDBPort + "/" + mongoDBName;
 
 mongoose.connect(mongoDBURI, {autoIndex: false});
-console.log("Connecting DB to: " + mongoDBURI);
+logger.info("Connecting DB to: " + mongoDBURI);
 
 mongoose.connection.on("open", function () {
   app.listen(port, function () {
-    console.log("ACME-Explorer RESTful API server started on: " + port);
+    logger.info("ACME-Explorer RESTful API server started on: " + port);
   });
 });
 
@@ -64,7 +65,7 @@ mongoose.connection.on("error", function (err) {
   console.error("DB init error " + err);
 });
 
-//mongoose.connection.dropDatabase(function(err, result) {console.log(err,result)});
+//mongoose.connection.dropDatabase(function(err, result) {logger.info(err,result)});
 
 DashboardTools.createDashboardJob();
 

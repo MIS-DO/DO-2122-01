@@ -1,4 +1,5 @@
 'use strict'
+var logger = require('../../logger');
 
 exports.store_json_fs = function (req, res) {
   const streamToMongoDB = require('stream-to-mongo-db').streamToMongoDB
@@ -27,7 +28,7 @@ exports.store_json_fs = function (req, res) {
     const writableStream = streamToMongoDB(outputDBConfig)
   
     // create readable stream and consume it
-    console.log('starting streaming the json from file: ' + sourceFile + ', to dbURL: ' + dbURL + ', into the collection: ' + collection)
+    logger.info('starting streaming the json from file: ' + sourceFile + ', to dbURL: ' + dbURL + ', into the collection: ' + collection)
     fs.createReadStream(sourceFile) // './myJsonData.json'
       .pipe(JSONStream.parse(parseString))
       .on('data', function handleRecord(data) {
@@ -158,18 +159,18 @@ exports.store_json_fs = function (req, res) {
       .pipe(writableStream)
       .on('finish', function () {
         response += 'All documents stored in the collection!'
-        console.log(response)
+        logger.info(response)
         res.send(response)
       })
       .on('error', function (err) {
-        console.log(err)
+        logger.info(err)
         res.send(err)
       })
   } else {
     if (req.query.dbURL == null) response += 'A mandatory dbURL parameter is missed.\n'
     if (req.query.collection == null) response += 'A mandatory collection parameter is missed.\n'
     if (req.query.sourceFile == null) response += 'A mandatory sourceFile parameter is missed.\n'
-    console.log(response)
+    logger.info(response)
     res.send(response)
   }
 }

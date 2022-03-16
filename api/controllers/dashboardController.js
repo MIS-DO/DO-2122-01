@@ -7,9 +7,10 @@ const Trip = mongoose.model('Trip')
 const Actor = mongoose.model('Actor')
 const Application = mongoose.model('Application')
 const Finder = mongoose.model('Finder')
+var logger = require('../../logger');
 
 exports.list_all_indicators = function (req, res) {
-  console.log('Requesting indicators')
+  logger.info('Requesting indicators')
 
   Dashboard.find().sort('-computationMoment').exec(function (err, indicators) {
   if (err) {
@@ -52,7 +53,7 @@ let computeDashboardJob
 
 exports.rebuildPeriod = function (req, res) {
   res.status(200)
-  console.log('Updating rebuild period. Request: period:' + req.query.rebuildPeriod)
+  logger.info('Updating rebuild period. Request: period:' + req.query.rebuildPeriod)
   
   // Get Rebuild Period
   rebuildPeriod = req.query.rebuildPeriod
@@ -71,7 +72,7 @@ exports.rebuildPeriod = function (req, res) {
 function createDashboardJob () {
   computeDashboardJob = new CronJob(rebuildPeriod, function () {
     const newDashboard = new Dashboard()
-    console.log('Cron job submitted. Rebuild period: ' + rebuildPeriod)
+    logger.info('Cron job submitted. Rebuild period: ' + rebuildPeriod)
     async.parallel([
 
       computeTripsByManager,
@@ -83,7 +84,7 @@ function createDashboardJob () {
       
     ], function (err, results) {
       if (err) {
-        console.log('Error computing dashboard: ' + err)
+        logger.info('Error computing dashboard: ' + err)
       } else {
 
         newDashboard.trip_stats_by_manager = results[0]
@@ -97,9 +98,9 @@ function createDashboardJob () {
 
         newDashboard.save(function (err, dashboard) {
           if (err) {
-            console.log('Error saving dashboard: ' + err)
+            logger.info('Error saving dashboard: ' + err)
           } else {
-            console.log('new Dashboard succesfully saved. Date: ' + new Date())
+            logger.info('new Dashboard succesfully saved. Date: ' + new Date())
           }
         })
 

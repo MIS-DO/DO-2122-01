@@ -13,4 +13,4 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-CMD nodemon -L --watch . app.js
+CMD nodemon -L --watch . index.js
