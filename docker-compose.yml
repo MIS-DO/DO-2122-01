@@ -10,6 +10,7 @@ services:
     volumes:
       - .:/opt/app
       - /opt/app/node_modules
+      - "logsvolume:/usr/src/app/logs"
     networks:
       - ass
   
@@ -21,9 +22,17 @@ services:
       MONGO_INITDB_DATABASE: ACME_Explorer
     ports:
       - "27017:27017"
+    volumes:
+      - "logsvolume:/var/log/mongodb"
+      - "datavolume:/data/db"
     networks:
       - ass
 
 networks:
   ass:
     driver: bridge
+
+volumes:
+  datavolume:
+  logsvolume:
+    external: false
